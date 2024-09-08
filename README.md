@@ -16,7 +16,7 @@ venv\scripts\activate
 
 
 ## To execute the project:
-Add your jpg pictures to the file "imagenes", the execute the python file (as you needed) in the terminal:
+Add your jpg pictures to the file "imagenes" (if doesn´t exist create the file), then execute the python file (as you needed) in the terminal:
 - Python "src\Imagen_to_ppt.py"
 - Python "src\Imagen_to_ppt - Picture center.py"
 - Python "src\Imagen_to_ppt - slide size.py"
