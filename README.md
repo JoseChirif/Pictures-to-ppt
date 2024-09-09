@@ -37,4 +37,5 @@ pip install python-decouple
 - [@Jose Chirif](https://github.com/JoseChirif)
 
 ## 🚀 About Me
-[I'm an Industrial Engineer specialized in process optimization, business intelligence and data science.](https://linktr.ee/jchirif)
+I'm an Industrial Engineer specialized in process optimization, business intelligence and data science.
+[Porfolio - Network - Contact](https://linktr.ee/jchirif)
