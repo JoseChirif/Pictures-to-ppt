@@ -16,18 +16,10 @@ venv\scripts\activate
 
 
 ## To execute the project:
-Add your jpg pictures to the file "imagenes" (if doesn´t exist create the file), then execute the python file (as you needed) in the terminal:
-- Python "src\Imagen_to_ppt.py"
-- Python "src\Imagen_to_ppt - Picture center.py"
-- Python "src\Imagen_to_ppt - slide size.py"
+Move the project in the folder where are all the pictures that you what to insert in ppt. The run 'python run.py' and select an option.
 
 
 
-### Other paramethers
-#### Package needed: 
-pip install pynput
-pip install python-dotenv 
-pip install python-decouple
 
 
 

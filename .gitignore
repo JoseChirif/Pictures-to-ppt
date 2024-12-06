@@ -1,7 +1,28 @@
-imagenes
-**.pptx
-test.py
-
-venv
-
+# Entorno virtual
+venv/
+# Python cache
 **__pycache__
+
+
+# Archivos de instalación
+dist/
+build/
+*.spec
+
+# Archivos del editor
+.vscode/
+.idea/
+# Llaves o archivos sensibles
+#*.env
+
+# ppts
+**.pptx
+
+# otros
+**lista_funciones.py
+**test.py
+mensaje_git_update.txt
+estructura_proyecto.py
+material soporte
+
+
