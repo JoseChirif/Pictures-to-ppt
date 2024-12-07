@@ -1,10 +1,9 @@
 #Import libraries
 import tkinter as tk
-from tkinter import ttk
 import sys
 import os
 import subprocess
-from PIL import Image, ImageTk
+from PIL import Image, ImageTk, ImageOps
 
 # go to the parent directory if you are running this script directly (uncomment the following lines)
 # sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -12,15 +11,18 @@ from PIL import Image, ImageTk
 from functions.functions import run_picture_center, run_picture_in_panoramic_slide, run_picture_covering_panoramic_slide, open_web_page, adjust_text
 
 # Import parameters from config
-from config.config import icon_picture_png, icon_picture_ico, logo_github_png, __version__
+from config.config import icon_picture_png, icon_picture_ico, logo_github_png, pictures_center, pictures_in_pan_slide, pictures_covering_slide, __version__
 
 current_version = f'v{__version__}'
 
 # Variables
 project_title = "Pictures to Power Point"
 text_button_1 = "Picture with border in the center of the slide"
+picture_button_1 = pictures_center
 text_button_2 = "Picture in panoramic slide"
+picture_button_2 = pictures_in_pan_slide
 text_button_3 = "Picture covering panoramic slice"
+picture_button_3 = pictures_covering_slide
 instructions_title = "Instructions:"
 instructions_content = "1. Move the .exe file in the folder where are located. \n2. Execute the program. \n3. Chose your option."
 notes_title = "Notes:"
@@ -56,8 +58,6 @@ def main_menu():
     Returns:
         None: This function does not return any value. It opens the main menu interface and handles user interaction for navigation.
     """
-    global window, combo_languages # Make 'window' and combo_languages global
-    global lbl_project_title, lbl_languages, lbl_menu, language_text, btn_option_1, btn_option_2, btn_option_3, lbl_project_title_notes_content, lbl_notes_content, lbl_instructions  # Make the widgets global to update them in select_language..
     window = tk.Tk()
     window.title(project_title)
     
@@ -117,38 +117,91 @@ def main_menu():
     lbl_menu = tk.Label(frame_options_and_notes, text="Select an option:", font=("Arial", 10, "bold"), bg=background, anchor="w")
     lbl_menu.pack(expand=True, fill='both', pady=5, padx=margin, anchor="w")
 
-    # Button 1: Create Excel
-    btn_option_1 = tk.Button(frame_options_and_notes, text=text_button_1, font=("Arial", 10), command=lambda: run_picture_center(),
-                            borderwidth=button_border_width, highlightbackground=button_color_border,
-                            padx=padding_text_button_x, pady=padding_text_button_y)
-    btn_option_1.pack(expand=True, fill='both', padx=margin+10, pady=(button_padding, button_spacing))
 
-    # Button 2: Modify names
-    btn_option_2 = tk.Button(frame_options_and_notes, text=text_button_2, font=("Arial", 10),command=lambda: run_picture_in_panoramic_slide(),
-                            borderwidth=button_border_width, highlightbackground=button_color_border,
-                            padx=padding_text_button_x, pady=padding_text_button_y)
-    btn_option_2.pack(expand=True, fill='both', padx=margin+10, pady=(button_padding, button_spacing))
 
-    # Button 3: Unlock Excel sheet
-    btn_option_3 = tk.Button(frame_options_and_notes, text=text_button_3, font=("Arial", 10),command=lambda: run_picture_covering_panoramic_slide(),
-                            borderwidth=button_border_width, highlightbackground=button_color_border,
-                            padx=padding_text_button_x, pady=padding_text_button_y)
-    btn_option_3.pack(expand=True, fill='both', padx=margin+10, pady=(button_padding, button_spacing))
+    ## Button 1: Picture center
+    frame_button_1 = tk.Frame(frame_options_and_notes, bg=background)
+    frame_button_1.pack(fill="x", pady=(button_padding, button_spacing), padx=margin+10)
+    # Load the image
+    img1 = Image.open(picture_button_1)
+    aspect_ratio = img1.width / img1.height
+    new_height = 50  # Button height
+    new_width = int(new_height * aspect_ratio)
+    img1_resized = img1.resize((new_width, new_height), Image.LANCZOS)
+    img1_bordered = ImageOps.expand(img1_resized, border=1, fill="black")
+    img1_tk = ImageTk.PhotoImage(img1_bordered)
+    # Add the image to the left
+    label_img1 = tk.Label(frame_button_1, image=img1_tk, bg=background, cursor="hand2")
+    label_img1.image = img1_tk  # Keep reference
+    label_img1.pack(side="left")
+    # Bind the click event to the image
+    label_img1.bind("<Button-1>", lambda event: run_picture_center())
 
+    btn_option_1 = tk.Button(frame_button_1, text=text_button_1, font=("Arial", 10),
+        command=lambda: run_picture_center(), borderwidth=button_border_width, highlightbackground=button_color_border, cursor="hand2")
+    btn_option_1.pack(side="left", expand=True, fill="both")
+
+
+    ## Button 2: In slide
+    frame_button_2 = tk.Frame(frame_options_and_notes, bg=background)
+    frame_button_2.pack(fill="x", pady=(button_padding, button_spacing), padx=margin+10)
+    # Load the image
+    img2 = Image.open(picture_button_2)
+    aspect_ratio = img2.width / img2.height
+    new_height = 50  # Button height
+    new_width = int(new_height * aspect_ratio)
+    img2_resized = img2.resize((new_width, new_height), Image.LANCZOS)
+    img2_bordered = ImageOps.expand(img2_resized, border=1, fill="black")
+    img2_tk = ImageTk.PhotoImage(img2_bordered)
+    # Add the image to the left
+    label_img2 = tk.Label(frame_button_2, image=img2_tk, bg=background, cursor="hand2")
+    label_img2.image = img2_tk  # Keep reference
+    label_img2.pack(side="left")
+    # Bind the click event to the image
+    label_img2.bind("<Button-1>", lambda event: run_picture_in_panoramic_slide())
+
+    btn_option_2 = tk.Button(frame_button_2, text=text_button_2, font=("Arial", 10),
+        command=lambda: run_picture_in_panoramic_slide(), borderwidth=button_border_width, highlightbackground=button_color_border, cursor="hand2")
+    btn_option_2.pack(side="left", expand=True, fill="both")
+
+
+    ## Button 3: Covering slide
+    frame_button_3 = tk.Frame(frame_options_and_notes, bg=background)
+    frame_button_3.pack(fill="x", pady=(button_padding, button_spacing), padx=margin+10)
+    # Load the image
+    img3 = Image.open(picture_button_3)
+    aspect_ratio = img3.width / img3.height
+    new_height = 50  # Button height
+    new_width = int(new_height * aspect_ratio)
+    img3_resized = img3.resize((new_width, new_height), Image.LANCZOS)
+    img3_bordered = ImageOps.expand(img3_resized, border=1, fill="black")
+    img3_tk = ImageTk.PhotoImage(img3_bordered)
+    # Add the image to the left
+    label_img3 = tk.Label(frame_button_3, image=img3_tk, bg=background, cursor="hand2")
+    label_img3.image = img3_tk  # Keep reference
+    label_img3.pack(side="left")
+    # Bind the click event to the image
+    label_img3.bind("<Button-1>", lambda event: run_picture_covering_panoramic_slide())
+
+    btn_option_3 = tk.Button(frame_button_3, text=text_button_3, font=("Arial", 10),
+        command=lambda: run_picture_covering_panoramic_slide(), borderwidth=button_border_width, highlightbackground=button_color_border, cursor="hand2")
+    btn_option_3.pack(side="left", expand=True, fill="both")
+    
+    
+    
 
     # Instructions title text
     lbl_project_title_instructions_content = tk.Label(frame_options_and_notes, text=instructions_title, font=("Arial", 10, "bold"), bg=background, anchor="w")
     lbl_project_title_instructions_content.pack(expand=True, fill='both', pady=0, padx=margin, anchor="n")
 
     # instructions content
-    lbl_instructions_content = tk.Label(frame_options_and_notes, text=instructions_content, font=("Arial", 10), 
-                                justify="left", bg=background, anchor="n")
-    lbl_instructions_content.pack(expand=True, fill='both', padx=margin, pady=0)
+    lbl_instructions_content = tk.Label(frame_options_and_notes, text=instructions_content, font=("Arial", 10), justify="left", bg=background, anchor="n")
+    lbl_instructions_content.pack(expand=True, fill='both', padx=margin)
 
 
     # Notes title text
     lbl_project_title_notes_content = tk.Label(frame_options_and_notes, text=notes_title, font=("Arial", 10, "bold"), bg=background, anchor="w")
-    lbl_project_title_notes_content.pack(expand=True, fill='both', pady=(0, 0), padx=margin, anchor="n")
+    lbl_project_title_notes_content.pack(expand=True, fill='both', padx=margin, anchor="n")
 
     # notes content
     lbl_notes_content = tk.Label(frame_options_and_notes, text=notes_content, font=("Arial", 10), 
@@ -232,7 +285,8 @@ def main_menu():
     lbl_version.place(relx=1.0, rely=1.0, anchor="se", x=-margin, y=-25)
 
  
-    
+
+
     
     ## FINAL SETTINGS
     window.bind("<Configure>", lambda event: adjust_text(event, lbl_project_title, lbl_menu, btn_option_1, btn_option_2, btn_option_3, lbl_project_title_instructions_content, lbl_instructions_content, lbl_project_title_notes_content, lbl_notes_content, margin=20))
@@ -248,5 +302,3 @@ def main_menu():
 # Call main_menu
 if __name__ == "__main__":
     main_menu()
-    
-    

@@ -139,7 +139,8 @@ def show_options(header_text, *args):
             font=("Arial", 10),  # Font size 10
             padx=20,  # Horizontal padding inside the button
             pady=10,  # Vertical padding inside the button
-            command=lambda opt=i: select_option(opt)
+            command=lambda opt=i: select_option(opt),
+            cursor="hand2"
         )
         button.pack(pady=5, padx=20)  # Spacing between buttons
 
@@ -151,7 +152,8 @@ def show_options(header_text, *args):
         bg="#F06D22",
         command=cancel_current_operation,
         padx=20,  # Horizontal padding inside the button
-        pady=10  # Vertical padding inside the button
+        pady=10,  # Vertical padding inside the button
+        cursor="hand2"
     )
     cancel_button.pack(side=tk.BOTTOM, anchor=tk.SE, padx=10, pady=10)
 
