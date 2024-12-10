@@ -5,8 +5,8 @@ from pptx.dml.color import RGBColor
 from PIL import Image
 
 # go to the parent directory if you are running this script directly (uncomment the following lines)
-import sys
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# import sys
+# sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from config.config import pictures_extensions
 from functions.functions import working_directory, show_options, show_message, check_presentation_exists

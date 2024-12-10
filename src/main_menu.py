@@ -6,11 +6,10 @@ import subprocess
 from PIL import Image, ImageTk, ImageOps
 
 # go to the parent directory if you are running this script directly (uncomment the following lines)
+# import sys
 # sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from functions.functions import run_picture_center, run_picture_in_panoramic_slide, run_picture_covering_panoramic_slide, open_web_page, adjust_text
-
-# Import parameters from config
 from config.config import icon_picture_png, icon_picture_ico, logo_github_png, pictures_center, pictures_in_pan_slide, pictures_covering_slide, __version__
 
 current_version = f'v{__version__}'
@@ -24,9 +23,9 @@ picture_button_2 = pictures_in_pan_slide
 text_button_3 = "Picture covering panoramic slice"
 picture_button_3 = pictures_covering_slide
 instructions_title = "Instructions:"
-instructions_content = "1. Move the .exe file in the folder where are located. \n2. Execute the program. \n3. Chose your option."
+instructions_content = "1. Move the .exe file in the folder where are located. \n2. Execute the program. \n3. Choose your option."
 notes_title = "Notes:"
-notes_content = f"-The 1st option ({text_button_1}) centers the image to the slide with an heigh of 17.43 cm and add a 0.75pt black border to the image.\n- If you chose the 3rd option ({text_button_3}), the picture will be croped to get the slide aspect ratio."
+notes_content = f"-The 1st option ({text_button_1}) centers the image to the slide with an heigh of 17.43 cm and add a 0.75pt black border to the image.\n- If you choose the 3rd option ({text_button_3}), the picture will be croped to get the slide aspect ratio."
 
 
 # Styles
@@ -41,6 +40,56 @@ window_size = "650x650"   # Custom window size (width x height)
 margin = 30        # left margin to align texts
 minimum_window_width = 300
 link_color = "#0770E0"
+
+
+    
+    
+def create_button_with_image(parent_frame, path_to_picture, text_button, command):
+    """
+    Creates a frame with an image on the left and a button on the right.
+
+    Args:
+        parent_frame (tk.Frame): The frame where the button with the image will be added.
+        path_to_picture (str): Path to the image file.
+        text_button (str): Text to display on the button.
+        command (function): Function to execute when the button is clicked.
+    """
+    # Create the container frame
+    frame_button = tk.Frame(parent_frame, bg=background)
+    frame_button.pack(fill="x", pady=(button_padding, button_spacing), padx=margin + 10)
+    
+    # Load and process the image
+    img = Image.open(path_to_picture)
+    aspect_ratio = img.width / img.height
+    new_height = 50  # Button height
+    new_width = int(new_height * aspect_ratio)
+    img_resized = img.resize((new_width, new_height), Image.LANCZOS)
+    img_bordered = ImageOps.expand(img_resized, border=1, fill="black")
+    img_tk = ImageTk.PhotoImage(img_bordered)
+    
+    # Create the image label
+    label_img = tk.Label(frame_button, image=img_tk, bg=background, cursor="hand2")
+    label_img.image = img_tk  # Keep reference to prevent garbage collection
+    label_img.pack(side="left")
+    
+    # Bind click event to the image
+    label_img.bind("<Button-1>", lambda event: command())
+    
+    # Create the button
+    btn_option = tk.Button(
+        frame_button,
+        text=text_button,
+        font=("Arial", 10),
+        command=command,
+        borderwidth=button_border_width,
+        highlightbackground=button_color_border,
+        cursor="hand2",
+    )
+    btn_option.pack(side="left", expand=True, fill="both")
+        
+    return btn_option
+
+
 
 
     
@@ -118,76 +167,12 @@ def main_menu():
     lbl_menu.pack(expand=True, fill='both', pady=5, padx=margin, anchor="w")
 
 
-
-    ## Button 1: Picture center
-    frame_button_1 = tk.Frame(frame_options_and_notes, bg=background)
-    frame_button_1.pack(fill="x", pady=(button_padding, button_spacing), padx=margin+10)
-    # Load the image
-    img1 = Image.open(picture_button_1)
-    aspect_ratio = img1.width / img1.height
-    new_height = 50  # Button height
-    new_width = int(new_height * aspect_ratio)
-    img1_resized = img1.resize((new_width, new_height), Image.LANCZOS)
-    img1_bordered = ImageOps.expand(img1_resized, border=1, fill="black")
-    img1_tk = ImageTk.PhotoImage(img1_bordered)
-    # Add the image to the left
-    label_img1 = tk.Label(frame_button_1, image=img1_tk, bg=background, cursor="hand2")
-    label_img1.image = img1_tk  # Keep reference
-    label_img1.pack(side="left")
-    # Bind the click event to the image
-    label_img1.bind("<Button-1>", lambda event: run_picture_center())
-
-    btn_option_1 = tk.Button(frame_button_1, text=text_button_1, font=("Arial", 10),
-        command=lambda: run_picture_center(), borderwidth=button_border_width, highlightbackground=button_color_border, cursor="hand2")
-    btn_option_1.pack(side="left", expand=True, fill="both")
-
-
-    ## Button 2: In slide
-    frame_button_2 = tk.Frame(frame_options_and_notes, bg=background)
-    frame_button_2.pack(fill="x", pady=(button_padding, button_spacing), padx=margin+10)
-    # Load the image
-    img2 = Image.open(picture_button_2)
-    aspect_ratio = img2.width / img2.height
-    new_height = 50  # Button height
-    new_width = int(new_height * aspect_ratio)
-    img2_resized = img2.resize((new_width, new_height), Image.LANCZOS)
-    img2_bordered = ImageOps.expand(img2_resized, border=1, fill="black")
-    img2_tk = ImageTk.PhotoImage(img2_bordered)
-    # Add the image to the left
-    label_img2 = tk.Label(frame_button_2, image=img2_tk, bg=background, cursor="hand2")
-    label_img2.image = img2_tk  # Keep reference
-    label_img2.pack(side="left")
-    # Bind the click event to the image
-    label_img2.bind("<Button-1>", lambda event: run_picture_in_panoramic_slide())
-
-    btn_option_2 = tk.Button(frame_button_2, text=text_button_2, font=("Arial", 10),
-        command=lambda: run_picture_in_panoramic_slide(), borderwidth=button_border_width, highlightbackground=button_color_border, cursor="hand2")
-    btn_option_2.pack(side="left", expand=True, fill="both")
-
-
-    ## Button 3: Covering slide
-    frame_button_3 = tk.Frame(frame_options_and_notes, bg=background)
-    frame_button_3.pack(fill="x", pady=(button_padding, button_spacing), padx=margin+10)
-    # Load the image
-    img3 = Image.open(picture_button_3)
-    aspect_ratio = img3.width / img3.height
-    new_height = 50  # Button height
-    new_width = int(new_height * aspect_ratio)
-    img3_resized = img3.resize((new_width, new_height), Image.LANCZOS)
-    img3_bordered = ImageOps.expand(img3_resized, border=1, fill="black")
-    img3_tk = ImageTk.PhotoImage(img3_bordered)
-    # Add the image to the left
-    label_img3 = tk.Label(frame_button_3, image=img3_tk, bg=background, cursor="hand2")
-    label_img3.image = img3_tk  # Keep reference
-    label_img3.pack(side="left")
-    # Bind the click event to the image
-    label_img3.bind("<Button-1>", lambda event: run_picture_covering_panoramic_slide())
-
-    btn_option_3 = tk.Button(frame_button_3, text=text_button_3, font=("Arial", 10),
-        command=lambda: run_picture_covering_panoramic_slide(), borderwidth=button_border_width, highlightbackground=button_color_border, cursor="hand2")
-    btn_option_3.pack(side="left", expand=True, fill="both")
+    ## Buttons
+    button_nr_1 = create_button_with_image(frame_options_and_notes, picture_button_1, text_button_1, run_picture_center)
+    button_nr_2 = create_button_with_image(frame_options_and_notes, picture_button_2, text_button_2, run_picture_in_panoramic_slide)
+    button_nr_3 = create_button_with_image(frame_options_and_notes, picture_button_3, text_button_3, run_picture_covering_panoramic_slide)
     
-    
+   
     
 
     # Instructions title text
@@ -222,7 +207,7 @@ def main_menu():
     lbl_github_text.pack(side=tk.LEFT, padx=(100, 0), pady=(5, 0))
     
     # Repository link (with the text)
-    lbl_github_text.bind("<Button-1>", lambda e: open_web_page('https://github.com/JoseChirif/Pictures-to-ppt','https://github.com/JoseChirif?tab=repositories', 'https://github.com/JoseChirif'))
+    lbl_github_text.bind("<Button-1>", lambda e: open_web_page('https://github.com/JoseChirif/Pictures-to-slides','https://github.com/JoseChirif?tab=repositories', 'https://github.com/JoseChirif'))
     
     #PNG    
     # Load Github icon
@@ -236,7 +221,7 @@ def main_menu():
     lbl_github_logo.pack(side=tk.LEFT, padx=(0, 10))  # Add padding on the right side
 
     # Repository link (with the icon)
-    lbl_github_logo.bind("<Button-1>", lambda e: open_web_page('https://github.com/JoseChirif/Pictures-to-ppt','https://github.com/JoseChirif?tab=repositories', 'https://github.com/JoseChirif'))
+    lbl_github_logo.bind("<Button-1>", lambda e: open_web_page('https://github.com/JoseChirif/Pictures-to-slides','https://github.com/JoseChirif?tab=repositories', 'https://github.com/JoseChirif'))
     
     
 
@@ -255,22 +240,19 @@ def main_menu():
         Returns:
             str: The absolute path to LICENSE.txt, allowing other parts of the application to access the license file regardless of the current working directory.
         """
-        return os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'LICENSE.txt'))
+        return os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'LICENSE'))
         
     def open_license():
         """
-        Opens the LICENSE.txt file in the default text editor (Notepad on Windows) for viewing.
-
-        This function is located in src/main_menu.py
-
-        Args:
-            None
-
-        Returns:
-            None: This function does not return any value. It opens the license file in a new Notepad window if the file exists at the specified path.
+        Opens the LICENSE file in Notepad, regardless of its extension.
         """
         license_path = get_license_route()
-        subprocess.Popen(['notepad.exe', license_path])
+        try:
+            subprocess.run(["notepad", license_path], check=True)
+        except FileNotFoundError:
+            print("Notepad not found. Please ensure it is installed.")
+        except Exception as e:
+            print(f"An error occurred while trying to open the license file: {e}")
 
 
     # Show "MIT License" 
@@ -289,7 +271,7 @@ def main_menu():
 
     
     ## FINAL SETTINGS
-    window.bind("<Configure>", lambda event: adjust_text(event, lbl_project_title, lbl_menu, btn_option_1, btn_option_2, btn_option_3, lbl_project_title_instructions_content, lbl_instructions_content, lbl_project_title_notes_content, lbl_notes_content, margin=20))
+    window.bind("<Configure>", lambda event: adjust_text(event, lbl_project_title, lbl_menu, lbl_project_title_instructions_content, button_nr_1, button_nr_2, button_nr_3,  lbl_instructions_content, lbl_project_title_notes_content, lbl_notes_content, margin=20))
     
     window.mainloop()
 
